@@ -21,6 +21,74 @@ struct transaction {
 	char description[20];
 };
 
-struct transaction * mergeSortedArrays(struct transaction *A, int ALen, struct transaction *B, int BLen) {
+int datecode_struct(char *date)
+{
+	int agevalue = 0, i = 0;
+	int a[3] = { 10, 100, 10000 };
+	while (*date)
+	{
+		agevalue += (strtol(date, &date, 10)*a[i++]);
+		date++;
+	}
+	return agevalue;
+}
+
+int equal_struct(struct transaction *a, struct transaction *b)
+{
+	int a_date = datecode_struct(a->date);
+	int b_date = datecode_struct(b->date);
+	if (a_date == b_date)
+		return 0;
+	else if (a_date > b_date)
+		return 1;
+	else
+		return -1;
+}
+
+
+struct transaction * mergeSortedArrays(struct transaction *A, int ALen, struct transaction *B, int BLen) 
+{
+	if ((A == NULL) || (B == NULL))
+		return NULL;
+	int len = ALen + BLen;
+	struct transaction *result = (struct transaction *)malloc(sizeof(struct transaction) * len);
+	int i = 0, j = 0, k = 0, is_equal;
+
+	while (i<ALen && j<BLen)
+	{
+		is_equal = equal_struct(&A[i], &B[j]);
+		if (is_equal == 0)
+		{
+			result[k++] = A[i];
+			result[k] = B[j];
+			i++;
+			j++;
+		}
+		else if (is_equal == 1)
+		{
+			result[k] = B[j];
+			j++;
+		}
+		else
+		{
+			result[k] = A[i];
+			i++;
+		}
+		k++;
+	}
+	while (i<ALen)
+	{
+		result[k] = A[i];
+		k++;
+		i++;
+	}
+	while (j<BLen)
+	{
+		result[k] = B[j];
+		k++;
+		j++;
+	}
+	if (k>0)
+		return result;
 	return NULL;
 }
