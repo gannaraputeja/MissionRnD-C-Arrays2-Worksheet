@@ -13,6 +13,7 @@ ERROR CASES: Return NULL for invalid inputs.
 
 NOTES:
 */
+#include <stdlib.h>
 
 struct transaction {
 	int amount;
@@ -20,6 +21,28 @@ struct transaction {
 	char description[20];
 };
 
-int countGreaterNumbers(struct transaction *Arr, int len, char *date) {
-	return -1;
+int agecode(char *date)
+{
+	int agevalue = 0, i = 0;
+	int a[] = { 10, 100, 10000 };
+	while (*date)
+	{
+		agevalue += (strtol(date, &date, 10)*a[i++]);
+		date++;
+	}
+	return agevalue;
+}
+
+int countGreaterNumbers(struct transaction *Arr, int len, char *date) 
+{
+	int i = 0, count = 0;
+	int date_age = agecode(date);
+	for (i = 0; i < len; i++)
+	{
+		if (agecode(Arr[i].date) > date_age)
+		{
+			count++;
+		}
+	}
+	return count;
 }
