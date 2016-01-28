@@ -15,6 +15,8 @@ NOTES:
 */
 
 #include <iostream>
+#include <stdlib.h>
+#include <string.h>
 
 struct transaction {
 	int amount;
@@ -22,6 +24,57 @@ struct transaction {
 	char description[20];
 };
 
-struct transaction * sortedArraysCommonElements(struct transaction *A, int ALen, struct transaction *B, int BLen) {
+int datecode(char *date)
+{
+	int agevalue = 0, i = 0;
+	int a[3] = { 10, 100, 10000 };
+	while (*date)
+	{
+		agevalue += (strtol(date, &date, 10)*a[i++]);
+		date++;
+	}
+	return agevalue;
+}
+
+int equal(struct transaction *a, struct transaction *b)
+{
+	int a_date = datecode(a->date);
+	int b_date = datecode(b->date);
+	if (a_date == b_date)
+		return 0;
+	else if (a_date > b_date)
+		return 1;
+	else
+		return -1;
+}
+
+struct transaction * sortedArraysCommonElements(struct transaction *A, int ALen, struct transaction *B, int BLen) 
+{
+	if ((A == NULL) || (B == NULL))
+		return NULL;
+	struct transaction *result = (struct transaction *)malloc(sizeof(struct transaction) * ALen);
+	int i = 0, j = 0, k = 0, is_equal;
+
+	while (i<ALen && j<BLen)
+	{
+		is_equal = equal(&A[i], &B[j]);
+		if (is_equal == 0)
+		{
+			result[k] = A[i];
+			i++;
+			j++;
+			k++;
+		}
+		else if (is_equal == 1)
+		{
+			j++;
+		}
+		else
+		{
+			i++;
+		}
+	}
+	if (k>0)
+		return result;
 	return NULL;
 }
